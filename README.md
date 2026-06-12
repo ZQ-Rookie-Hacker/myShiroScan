@@ -11,7 +11,9 @@
 # 自言自语
 据听说它的诞生是因为作者太太太懒了!
 
-由于作者没有进行更新，发现在最新版本中已经无法使用，于是进行二次开发进行兼容。
+由于pmiaowu作者没有更新，我发现在最新版本中已经不能使用了，于是进行二次开发进行适配。
+
+原始作者地址：https://github.com/pmiaowu/BurpShiroPassiveScan
 
 不想每个站点自己去添加个rememberMe去探测是否shiro框架
 
@@ -99,6 +101,7 @@ l1nk3r师傅的检测思路地址: https://mp.weixin.qq.com/s/do88_4Td1CSeKLmFqh
 # 问题查看
 目前有这几个地方可以查看
 <img width="2256" height="1236" alt="image" src="https://github.com/user-attachments/assets/b4d5106b-b8c0-4287-908b-39e636508d90" />
+<img width="2271" height="648" alt="image" src="https://github.com/user-attachments/assets/c6560195-26fe-4431-af9d-6f19412faf08" />
 <img width="2265" height="704" alt="image" src="https://github.com/user-attachments/assets/cc064dfe-4bb5-4143-b830-75a2853832b8" />
 
 # tag界面查看漏洞情况
