@@ -64,9 +64,9 @@ jar包地址: ./BurpShiroPassiveScan/target/BurpShiroPassiveScan/BurpShiroPassiv
 
 # 安装方法
 
-![image-20260612202235105](C:\Users\Rainc\AppData\Roaming\Typora\typora-user-images\image-20260612202235105.png)
+<img width="1959" height="975" alt="image" src="https://github.com/user-attachments/assets/ebcaad47-a627-4fa2-be06-41c6f1818aeb" />
+<img width="1869" height="408" alt="image" src="https://github.com/user-attachments/assets/5b02d15d-39c2-4ca9-9f5c-f022cc9a22d4" />
 
-![image-20260612202330796](C:\Users\Rainc\AppData\Roaming\Typora\typora-user-images\image-20260612202330796.png)
 
 # 检测方法选择
 
