@@ -98,8 +98,8 @@ l1nk3r师傅的检测思路地址: https://mp.weixin.qq.com/s/do88_4Td1CSeKLmFqh
 
 # 问题查看
 目前有这几个地方可以查看
-
-
+<img width="2256" height="1236" alt="image" src="https://github.com/user-attachments/assets/b4d5106b-b8c0-4287-908b-39e636508d90" />
+<img width="2265" height="704" alt="image" src="https://github.com/user-attachments/assets/cc064dfe-4bb5-4143-b830-75a2853832b8" />
 
 # tag界面查看漏洞情况
 
