@@ -58,7 +58,7 @@ public class BurpExtender implements IBurpExtender, IScannerCheck, IHttpListener
         this.globalVariableReader.putBooleanData("isExtensionUnload", false);
 
         // 标签界面
-        this.tags = new Tags(callbacks, NAME);
+        this.tags = new Tags(callbacks, NAME, this.globalVariableReader);
 
         // 配置文件
         this.yamlReader = YamlReader.getInstance(callbacks);
@@ -259,6 +259,9 @@ public class BurpExtender implements IBurpExtender, IScannerCheck, IHttpListener
 
         this.addDebugToUi(baseRequestResponse, "[debug] shiro fingerprint probing start", this.helpers.analyzeResponse(baseRequestResponse.getResponse()).getStatusCode() + "", baseBurpUrl.getHttpRequestUrl().toString());
 
+        // 记录该站点被实际扫描了一次(用于 scan.siteScanNumber 次数限制)
+        this.globalVariableReader.incrementSiteScan(baseBurpUrl.getRequestDomainName());
+
         // shiro指纹探测扩展
         ShiroFingerprint shiroFingerprint = new ShiroFingerprint(this.callbacks, this.yamlReader, baseRequestResponse);
 
@@ -300,7 +303,13 @@ public class BurpExtender implements IBurpExtender, IScannerCheck, IHttpListener
         shiroFingerprint.run().consoleExport();
 
         // shiro指纹检测-报告输出
-        issues.add(shiroFingerprint.run().export());
+        IScanIssue fingerprintIssue = shiroFingerprint.run().export();
+        if (fingerprintIssue != null) {
+            this.globalVariableReader.incrementSiteIssue(
+                    baseBurpUrl.getRequestDomainName(),
+                    this.yamlReader.getString("application.shiroFingerprintExtension.config.issueName"));
+            issues.add(fingerprintIssue);
+        }
 
         // 添加任务到面板中等待检测
         int tagId = this.tags.getScanQueueTagClass().add(
@@ -375,7 +384,13 @@ public class BurpExtender implements IBurpExtender, IScannerCheck, IHttpListener
                 shiroCipherKey.consoleExport();
 
                 // shiro加密key-报告输出
-                issues.add(shiroCipherKey.export());
+                IScanIssue cipherKeyIssue = shiroCipherKey.export();
+                if (cipherKeyIssue != null) {
+                    this.globalVariableReader.incrementSiteIssue(
+                            baseBurpUrl.getRequestDomainName(),
+                            this.yamlReader.getString("application.shiroCipherKeyExtension.config.issueName"));
+                    issues.add(cipherKeyIssue);
+                }
             } else {
                 this.tags.getScanQueueTagClass().save(
                         tagId,
@@ -592,34 +607,26 @@ public class BurpExtender implements IBurpExtender, IScannerCheck, IHttpListener
 
     /**
      * 网站问题数量
+     * 使用插件自身维护的计数(按当前开关周期), 而非 Burp 中已存在问题的累计数,
+     * 以便插件开关复位后, 各类问题上限也能重新计数
      *
      * @param domainName 请求域名名称
      * @param issueName  要查询的问题名称
      * @return
      */
     private Integer getSiteIssueNumber(String domainName, String issueName) {
-        Integer number = 0;
-
-        for (IScanIssue Issue : this.callbacks.getScanIssues(domainName)) {
-            if (Issue.getIssueName().equals(issueName)) {
-                number++;
-            }
-        }
-
-        return number;
+        return this.globalVariableReader.getSiteIssue(domainName, issueName);
     }
 
     /**
-     * 站点出现数量
+     * 站点被插件实际扫描的次数
+     * 使用插件自身维护的计数器, 而非 Burp 站点地图累积数,
+     * 以便插件每次重新开启时都能清零重新计数
      *
      * @param domainName
      * @return
      */
     private Integer getSiteNumber(String domainName) {
-        Integer number = 0;
-        for (IHttpRequestResponse requestResponse : this.callbacks.getSiteMap(domainName)) {
-            number++;
-        }
-        return number;
+        return this.globalVariableReader.getSiteScan(domainName);
     }
 }

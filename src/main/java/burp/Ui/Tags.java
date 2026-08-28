@@ -7,6 +7,7 @@ import burp.ITab;
 import burp.IBurpExtenderCallbacks;
 
 import burp.Bootstrap.YamlReader;
+import burp.Bootstrap.GlobalVariableReader;
 
 public class Tags implements ITab {
     private final JTabbedPane tabs;
@@ -16,7 +17,7 @@ public class Tags implements ITab {
     private BaseSettingTag baseSettingTag;
     private ScanQueueTag scanQueueTag;
 
-    public Tags(IBurpExtenderCallbacks callbacks, String name) {
+    public Tags(IBurpExtenderCallbacks callbacks, String name, GlobalVariableReader globalVariableReader) {
         this.tagName = name;
 
         tabs = new JTabbedPane();
@@ -28,7 +29,7 @@ public class Tags implements ITab {
         this.scanQueueTag = scanQueueTag;
 
         // 基本设置-窗口
-        BaseSettingTag baseSettingTag = new BaseSettingTag(callbacks, tabs, yamlReader);
+        BaseSettingTag baseSettingTag = new BaseSettingTag(callbacks, tabs, yamlReader, globalVariableReader);
         this.baseSettingTag = baseSettingTag;
 
         // 自定义组件-导入

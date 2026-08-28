@@ -55,8 +55,29 @@ public class ScanQueueTag extends AbstractTableModel implements IMessageEditorCo
         mjSplitPane.add(UscrollPane, "left");
         mjSplitPane.add(HjSplitPane, "right");
 
-        scanQueue.add(mjSplitPane);
+        // 顶部工具条: 清空记录
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6));
+        toolbar.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
+        JButton clearButton = new JButton("清空记录");
+        clearButton.addActionListener(e -> this.clearRecords());
+        toolbar.add(clearButton);
+
+        scanQueue.add(toolbar, BorderLayout.NORTH);
+        scanQueue.add(mjSplitPane, BorderLayout.CENTER);
         tabs.addTab("扫描队列", scanQueue);
+    }
+
+    /**
+     * 清空扫描队列中的所有记录
+     */
+    private void clearRecords() {
+        synchronized (this.Udatas) {
+            this.Udatas.clear();
+            this.fireTableDataChanged();
+        }
+        this.currentlyDisplayedItem = null;
+        this.HRequestTextEditor.setMessage(null, true);
+        this.HResponseTextEditor.setMessage(null, false);
     }
 
     @Override
