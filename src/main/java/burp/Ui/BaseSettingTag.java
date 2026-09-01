@@ -22,14 +22,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import burp.IBurpExtenderCallbacks;
 import burp.Bootstrap.YamlReader;
-import burp.Bootstrap.GlobalVariableReader;
 
 public class BaseSettingTag {
     private YamlReader yamlReader;
-
-    private GlobalVariableReader globalVariableReader;
-
-    private JCheckBox isStartBox;
 
     private JLabel statusLabel;
 
@@ -55,10 +50,8 @@ public class BaseSettingTag {
      */
     private final Map<JTextArea, String> defaultDictTexts = new HashMap<>();
 
-    public BaseSettingTag(IBurpExtenderCallbacks callbacks, JTabbedPane tabs, YamlReader yamlReader,
-                          GlobalVariableReader globalVariableReader) {
+    public BaseSettingTag(IBurpExtenderCallbacks callbacks, JTabbedPane tabs, YamlReader yamlReader) {
         this.yamlReader = yamlReader;
-        this.globalVariableReader = globalVariableReader;
         this.dictionariesRoot = resolveDictionariesDir();
         this.dictionariesRoot.mkdirs();
 
@@ -95,19 +88,6 @@ public class BaseSettingTag {
 
     private JPanel buildBasicContent() {
         JPanel rows = this.newRowContainer();
-        this.isStartBox = this.addCheckboxRow(rows, "isStart", "插件-启动");
-        // 热插拔: 取消勾选即停止(含在跑的key爆破), 勾选即恢复扫描
-        // 复用 isExtensionUnload 标志, key爆破线程每个key前都会检查它
-        this.isStartBox.addChangeListener(e -> {
-            if (this.globalVariableReader != null) {
-                boolean on = this.isStartBox.isSelected();
-                // 关闭则停止(含在跑的key爆破), 开启则恢复扫描
-                this.globalVariableReader.putBooleanData("isExtensionUnload", !on);
-                // 开关状态每次变化(关闭或重新开启)都清零各站点扫描计数,
-                // 保证"关闭再打开"后站点能再被按 siteScanNumber 扫描一次
-                this.globalVariableReader.resetSiteScan();
-            }
-        });
         this.addComboRow(rows, "messageLevel", "消息等级", new String[]{"PIVOTAL", "ALL"});
         this.addCheckboxRow(rows, "debug.showInUi", "调试信息显示到扫描队列UI");
         this.addIntRow(rows, "scan.siteScanNumber", "站点扫描次数(0=无限)");
@@ -187,12 +167,8 @@ public class BaseSettingTag {
     }
 
     /**
-     * 供外部判断插件是否启动
+     * 更新底部状态栏文案与颜色
      */
-    public Boolean isStart() {
-        return this.isStartBox.isSelected();
-    }
-
     private void setStatus(boolean success, String msg) {
         if (this.statusLabel == null) {
             return;

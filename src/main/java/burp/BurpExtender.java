@@ -168,7 +168,7 @@ public class BurpExtender implements IBurpExtender, IScannerCheck, IHttpListener
         String messageLevel = this.yamlReader.getString("messageLevel");
 
         // 判断是否开启插件
-        if (!this.tags.getBaseSettingTagClass().isStart()) {
+        if (!this.tags.isStart()) {
             this.addDebugToUi(baseRequestResponse, "[debug] skip: plugin disabled in UI", this.helpers.analyzeResponse(baseRequestResponse.getResponse()).getStatusCode() + "", baseBurpUrl.getHttpRequestUrl().toString());
             return null;
         }
